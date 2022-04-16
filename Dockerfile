@@ -23,11 +23,8 @@ ENV LANGUAGE=en_US.UTF-8 \
 RUN useradd -m -s /bin/bash -d ${AIRFLOW_USER_HOME} airflow
 RUN export AIRFLOW_UID=$(id -u airflow)
 
-RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends \
         dirmngr \
-        dotnet-runtime-2.1 \
         fuse \
         gettext-base \
         gnupg \
@@ -52,16 +49,10 @@ RUN pip install --no-cache-dir --upgrade \
     setuptools==61.1.1 \
     wheel==0.37.1
 
-RUN pip install --no-cache-dir azure-cli \
-    && az extension add -n ad -y \
-    && az extension add -n aks-preview -y \
-    && az extension add -n ml -y
-
 RUN pip install --no-cache-dir \
     apache-airflow$AIRFLOW_EXTRAS==$AIRFLOW_VERSION \
     azure-storage-blob \
     azure-storage-file-share \
-    azureml-core \
     crowd-kit \
     ipython \
     psycopg2==2.9.3 \
@@ -71,9 +62,10 @@ RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 RUN apt-get update && apt-get install -y --no-install-recommends openjdk-11-jre
 RUN java --version
 
-ENV GROOVY_HOME /opt/groovy
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV GROOVY_HOME=/opt/groovy
+ENV GROOVY_VERSION=4.0.1
 
-ENV GROOVY_VERSION 4.0.1
 RUN set -o errexit -o nounset \
     && echo "Downloading Groovy" \
     && wget --no-verbose --output-document=groovy.zip "https://archive.apache.org/dist/groovy/${GROOVY_VERSION}/distribution/apache-groovy-binary-${GROOVY_VERSION}.zip" \
