@@ -56,15 +56,16 @@ RUN pip install --no-cache-dir \
     crowd-kit \
     ipython \
     psycopg2==2.9.3 \
-    toloka-kit
+    toloka-kit \
+    toloka-airflow
 
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 RUN apt-get update && apt-get install -y --no-install-recommends openjdk-11-jre
 RUN java --version
 
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-ENV GROOVY_HOME=/opt/groovy
-ENV GROOVY_VERSION=4.0.1
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 \
+    GROOVY_HOME=/opt/groovy \
+    GROOVY_VERSION=4.0.1
 
 RUN set -o errexit -o nounset \
     && echo "Downloading Groovy" \
